@@ -13,6 +13,7 @@
   "dependencies": {
     "assert": "^2.0.0",
     "mongodb": "^3.6.5",
-    "mongoose": "^5.12.1"
+    "mongoose": "^5.12.1",
+    "validator": "^13.5.2"
   }
 }
