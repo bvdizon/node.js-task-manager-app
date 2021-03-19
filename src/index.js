@@ -60,6 +60,31 @@ app.get('/users/:id', (req, res) => {
     });
 });
 
+// endpoint for fetching tasks
+app.get('/tasks', (req, res) => {
+  Task.find({})
+    .then((tasks) => {
+      res.status(202).send(tasks);
+    })
+    .catch((error) => {
+      res.status(500).send(error.message);
+    });
+});
+
+// endpoint for fetching a single task by ID
+app.get('/tasks/:id', (req, res) => {
+  Task.findById(req.params.id)
+    .then((task) => {
+      if (!task) {
+        return res.status(404).send("Can't find a task with that ID.");
+      }
+      res.status(202).send(task);
+    })
+    .catch((error) => {
+      res.status(500).send(error.message);
+    });
+});
+
 // listening for changes at port specified
 app.listen(port, () => {
   console.log(`Server running at port ${port}`);
