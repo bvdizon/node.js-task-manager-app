@@ -21,10 +21,22 @@ const Password = mongoose.model('Password', {
       }
     },
   },
+  task: {
+    type: String,
+    trim: true,
+    required: true,
+  },
+  completed: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // instantiate model
-const pw = new Password({ pass: '   123456PASSword' });
+const pw = new Password({
+  pass: '   123456PASSaword',
+  task: '    This is a sample task.',
+});
 
 // save to db
 pw.save()
