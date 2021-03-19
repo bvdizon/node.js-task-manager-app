@@ -35,6 +35,32 @@ app.post('/tasks', (req, res) => {
     .catch((error) => res.status(400).send(error.message));
 });
 
+// endpoint for getting ( reading ) users from mongoDB
+app.get('/users', (req, res) => {
+  User.find({})
+    .then((users) => {
+      res.send(users);
+    })
+    .catch((error) => {
+      console.log(error.message);
+    });
+});
+
+// endpoint for getting ( reading ) one user from mongoDB
+app.get('/users/:id', (req, res) => {
+  User.findById(req.params.id)
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send("Can't find user with that ID.");
+      }
+      res.send(user);
+    })
+    .catch((error) => {
+      res.status(500).send(error.message);
+    });
+});
+
+// listening for changes at port specified
 app.listen(port, () => {
   console.log(`Server running at port ${port}`);
 });
