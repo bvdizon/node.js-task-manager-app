@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 
-// model - User
+// mongoose model - User
 const User = mongoose.model('User', {
   name: {
     type: String,
@@ -29,12 +29,6 @@ const User = mongoose.model('User', {
       }
     },
   },
-});
-
-const me = new User({
-  name: 'Brian Dizon',
-  email: 'bvdizon@gmail.com',
-  password: ';asdnfaiosdfPasssword',
 });
 
 module.exports = User;
