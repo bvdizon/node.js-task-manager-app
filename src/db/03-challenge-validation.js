@@ -16,7 +16,7 @@ const Password = mongoose.model('Password', {
         throw new Error('Password must be 6 characters or more.');
       }
 
-      if (value.includes('password')) {
+      if (value.toLowerCase().includes('password')) {
         throw new Error('Password must not contain the word "password" ');
       }
     },
@@ -24,7 +24,7 @@ const Password = mongoose.model('Password', {
 });
 
 // instantiate model
-const pw = new Password({ pass: '   123456' });
+const pw = new Password({ pass: '   123456PASSword' });
 
 // save to db
 pw.save()
