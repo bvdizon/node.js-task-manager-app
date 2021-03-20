@@ -11,78 +11,75 @@ const Task = require('./models/task');
 // converts incoming json to object
 app.use(express.json());
 
+/**
+ * Refactoring express routes with:
+ *  -> try-catch and
+ *  -> async-await
+ */
+
 // endpoint for creating users
-app.post('/users', (req, res) => {
+app.post('/users', async (req, res) => {
   const user = new User(req.body);
-  // saving new user to db
-  user
-    .save()
-    .then(() => {
-      res.status(201).send(user);
-    })
-    .catch((error) => {
-      res.status(400).send(error.message);
-    });
+  try {
+    await user.save();
+    res.status(201).send(user);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
 });
 
 // endpoint for creating tasks
-app.post('/tasks', (req, res) => {
+app.post('/tasks', async (req, res) => {
   const task = new Task(req.body);
-  // saving new task to db
-  task
-    .save()
-    .then(() => res.status(201).send(task))
-    .catch((error) => res.status(400).send(error.message));
+  try {
+    await task.save();
+    res.status(201).send(task);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
 });
 
 // endpoint for getting ( reading ) users from mongoDB
-app.get('/users', (req, res) => {
-  User.find({})
-    .then((users) => {
-      res.send(users);
-    })
-    .catch((error) => {
-      console.log(error.message);
-    });
+app.get('/users', async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.status(200).send(users);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 });
 
 // endpoint for getting ( reading ) one user from mongoDB
-app.get('/users/:id', (req, res) => {
-  User.findById(req.params.id)
-    .then((user) => {
-      if (!user) {
-        return res.status(404).send("Can't find user with that ID.");
-      }
-      res.send(user);
-    })
-    .catch((error) => {
-      res.status(500).send(error.message);
-    });
+app.get('/users/:id', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(400).send("Can't find a user with that ID.");
+    res.status(200).send(user);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 });
 
 // endpoint for fetching tasks
-app.get('/tasks', (req, res) => {
-  Task.find({})
-    .then((tasks) => {
-      res.status(202).send(tasks);
-    })
-    .catch((error) => {
-      res.status(500).send(error.message);
-    });
+app.get('/tasks', async (req, res) => {
+  try {
+    const tasks = await Task.find({});
+    res.status(202).send(tasks);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 });
 
 // endpoint for fetching a single task by ID
-app.get('/tasks/:id', (req, res) => {
-  Task.findById(req.params.id)
-    .then((task) => {
-      if (!task) {
-        return res.status(404).send("Can't find a task with that ID.");
-      }
-      res.status(202).send(task);
-    })
-    .catch((error) => {
-      res.status(500).send(error.message);
-    });
+app.get('/tasks/:id', async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id);
+    if (!task)
+      return res.status(404).send("You don't have a task with that ID.");
+    res.status(200).send(task);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 });
 
 // listening for changes at port specified
