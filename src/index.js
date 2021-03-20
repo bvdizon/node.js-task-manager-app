@@ -82,6 +82,58 @@ app.get('/tasks/:id', async (req, res) => {
   }
 });
 
+// endpoints for updating a single user
+app.patch('/users/:id', async (req, res) => {
+  const updates = Object.keys(req.body);
+  const allowedFieldsToUpdate = ['name', 'age', 'email', 'password'];
+  const isAllowedField = updates.every((update) =>
+    allowedFieldsToUpdate.includes(update)
+  );
+
+  if (!isAllowedField) return res.send({ error: 'Failed to update user.' });
+
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    res.status(200).send(user);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+});
+
+// endpoint for updating a task
+app.patch('/tasks/:id', async (req, res) => {
+  // validate fields to update
+  const updates = Object.keys(req.body);
+  const allowedFieldsToUpdate = ['description', 'completed'];
+  const isAllowedField = updates.every((update) =>
+    allowedFieldsToUpdate.includes(update)
+  );
+  if (!isAllowedField) {
+    return res
+      .status(400)
+      .send("You can only update  'description' and 'completed' fields. ");
+  }
+
+  try {
+    const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!task)
+      return res
+        .status(400)
+        .send({ error: "We don't have a task with that ID." });
+
+    res.status(200).send(task);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+});
+
 // listening for changes at port specified
 app.listen(port, () => {
   console.log(`Server running at port ${port}`);
