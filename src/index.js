@@ -134,6 +134,28 @@ app.patch('/tasks/:id', async (req, res) => {
   }
 });
 
+// endpoint for deleting a user
+app.delete('/users/:id', async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) return res.status(400).send({ error: "User ID doesn't exist." });
+    res.send(user);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+// endpoint for deleting a task
+app.delete('/tasks/:id', async (req, res) => {
+  try {
+    const task = await Task.findByIdAndDelete(req.params.id);
+    if (!task) return res.status(400).send({ error: 'Task ID not found.' });
+    res.send(task);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
 // listening for changes at port specified
 app.listen(port, () => {
   console.log(`Server running at port ${port}`);
